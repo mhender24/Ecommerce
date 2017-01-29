@@ -1,32 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
 namespace Ecommerce.Models
 {
-    public class Customer
+    public class Address
     {
         [Required]
         public int Id { get; set; }
 
         [Required]
-        public string FirstName { get; set; }
+        [ForeignKey("Customer")]
+        public int CustomerId { get; set; }
 
         [Required]
-        public string LastName { get; set; }
+        public string Street { get; set; }
 
         [Required]
-        public string Phone { get; set; }
+        public string City { get; set; }
 
         [Required]
-        public string Email { get; set; }
+        public string State { get; set; }
 
         [Required]
-        public string Username { get; set; }
-
-        [Required]
-        public string Password { get; set; }
+        public string Zipcode { get; set; }
     }
 }
