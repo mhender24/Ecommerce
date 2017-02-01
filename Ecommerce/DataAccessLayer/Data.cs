@@ -25,6 +25,5 @@ namespace Ecommerce.DataAccessLayer
             {
                 modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
             }
-        }
     }
 }
