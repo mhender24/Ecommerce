@@ -27,5 +27,7 @@ namespace Ecommerce.Models
 
         [Required]
         public string Zipcode { get; set; }
+
+        public virtual Customer Customer { get; set; }
     }
 }
