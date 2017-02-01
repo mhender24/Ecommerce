@@ -22,7 +22,7 @@ _UpgradeReport_Files/
 ###############
 # Directories #
 ###############
-bin/
+bin/ 
 obj/
 TestResults/
 ###################
@@ -46,12 +46,15 @@ TestResults/
 *.jar
 *.rar
 *.tar
+*.config
 *.zip
 ######################
 # Logs and databases #
 ######################
 *.log
 *.sqlite
+*.ldf
+*.mdf
 # OS generated files #
 ######################
 .DS_Store?
