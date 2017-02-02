@@ -27,7 +27,7 @@ namespace Ecommerce.Models
         public decimal Price { get; set; }
 
         public virtual Supplier Supplier { get; set; }
-        public virtual ProductDetail Detail { get; set; }
+        public virtual ProductDetail ProductDetail { get; set; }
 
     }
 }
