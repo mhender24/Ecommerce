@@ -15,14 +15,12 @@ namespace Ecommerce.Controllers
     {
         private readonly Data _db = new Data();
 
-        // GET: Product
         public ActionResult Index()
         {
             var products = _db.Products.Include(p => p.ProductDetail).Include(p => p.Supplier);
             return View(products.ToList());
         }
 
-        // GET: Product/Details/5
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -37,7 +35,6 @@ namespace Ecommerce.Controllers
             return View(product);
         }
 
-        // GET: Product/Create
         public ActionResult Create()
         {
             ViewBag.ProductDetailId = new SelectList(_db.ProductDetails, "Id", "Description");
@@ -45,9 +42,6 @@ namespace Ecommerce.Controllers
             return View();
         }
 
-        // POST: Product/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,SupplierId,ProductDetailId,Name,Price")] Product product)
@@ -64,7 +58,6 @@ namespace Ecommerce.Controllers
             return View(product);
         }
 
-        // GET: Product/Edit/5
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -81,9 +74,6 @@ namespace Ecommerce.Controllers
             return View(product);
         }
 
-        // POST: Product/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,SupplierId,ProductDetailId,Name,Price")] Product product)
@@ -99,7 +89,6 @@ namespace Ecommerce.Controllers
             return View(product);
         }
 
-        // GET: Product/Delete/5
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -114,7 +103,6 @@ namespace Ecommerce.Controllers
             return View(product);
         }
 
-        // POST: Product/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)

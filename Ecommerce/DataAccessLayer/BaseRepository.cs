@@ -7,7 +7,7 @@ using System.Web;
 
 namespace Ecommerce.DataAccessLayer
 {
-    public class BaseRepository<TEntity> where TEntity : class
+    public class BaseRepository<TEntity>  where TEntity : class 
     {
         internal Data context;
         internal DbSet<TEntity> dbSet;
@@ -80,6 +80,11 @@ namespace Ecommerce.DataAccessLayer
         {
             dbSet.Attach(entityToUpdate);
             context.Entry(entityToUpdate).State = EntityState.Modified;
+        }
+
+        public void Save()
+        {
+            context.SaveChanges();
         }
     }
 }

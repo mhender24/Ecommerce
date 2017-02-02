@@ -13,22 +13,26 @@ namespace Ecommerce.Controllers
 {
     public class SupplierController : Controller
     {
-        private readonly Data _db = new Data();
+        //private readonly Data _db = new Data();
+        private readonly SupplierRepository _db;
 
-        // GET: Supplier
-        public ActionResult Index()
+        public SupplierController()
         {
-            return View(_db.Suppliers.ToList());
+            _db = new SupplierRepository(new Data());
         }
 
-        // GET: Supplier/Details/5
+        public ActionResult Index()
+        {
+            return View(_db.Get());
+        }
+
         public ActionResult Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Supplier supplier = _db.Suppliers.Find(id);
+            Supplier supplier = _db.GetByID(id);
             if (supplier == null)
             {
                 return HttpNotFound();
@@ -36,37 +40,33 @@ namespace Ecommerce.Controllers
             return View(supplier);
         }
 
-        // GET: Supplier/Create
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: Supplier/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name,Phone,Address,City,State,Zipcode")] Supplier supplier)
+        public ActionResult Create([Bind(Include = "Name,Phone,Address,City,State,Zipcode")] Supplier supplier)
         {
             if (ModelState.IsValid)
             {
-                _db.Suppliers.Add(supplier);
-                _db.SaveChanges();
+                _db.Insert(supplier);
+                _db.Save();
                 return RedirectToAction("Index");
             }
 
             return View(supplier);
         }
 
-        // GET: Supplier/Edit/5
         public ActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var supplier = _db.Suppliers.Find(id);
+            var supplier = _db.GetByID(id);
             if (supplier == null)
             {
                 return HttpNotFound();
@@ -74,30 +74,27 @@ namespace Ecommerce.Controllers
             return View(supplier);
         }
 
-        // POST: Supplier/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,Name,Phone,Address,City,State,Zipcode")] Supplier supplier)
         {
             if (ModelState.IsValid)
             {
-                _db.Entry(supplier).State = EntityState.Modified;
-                _db.SaveChanges();
+                _db.Update(supplier);
+                _db.Save();
                 return RedirectToAction("Index");
             }
             return View(supplier);
         }
 
-        // GET: Supplier/Delete/5
         public ActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var supplier = _db.Suppliers.Find(id);
+            var supplier = _db.GetByID(id);
             if (supplier == null)
             {
                 return HttpNotFound();
@@ -105,14 +102,13 @@ namespace Ecommerce.Controllers
             return View(supplier);
         }
 
-        // POST: Supplier/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            var supplier = _db.Suppliers.Find(id);
-            _db.Suppliers.Remove(supplier);
-            _db.SaveChanges();
+            var supplier = _db.GetByID(id);
+            _db.Delete(supplier);
+            _db.Save();
             return RedirectToAction("Index");
         }
 
