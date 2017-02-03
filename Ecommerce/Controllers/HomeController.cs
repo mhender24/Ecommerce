@@ -13,13 +13,6 @@ namespace Ecommerce.Controllers
 {
     public class HomeController : Controller
     {
-        CustomerRepository customerDb;
-
-        public HomeController()
-        {
-            customerDb = new CustomerRepository(new Data());
-        }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Contact(Email model)
