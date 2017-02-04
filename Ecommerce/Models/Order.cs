@@ -17,7 +17,7 @@ namespace Ecommerce.Models
         public int CustomerId { get; set; }
 
         [Required]
-        public decimal Cost { get; set; }
+        public double Cost { get; set; }
 
         public virtual Customer Customer { get; set; }
     }

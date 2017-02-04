@@ -17,7 +17,7 @@ namespace Ecommerce.Models
         public int ProductId { get; set; }
 
         [Required]
-        public int Type { get; set; }
+        public string Type { get; set; }
         //public string Type {get;set;}
 
         public virtual Product Product { get; set; }
