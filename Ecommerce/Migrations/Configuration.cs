@@ -432,7 +432,7 @@ namespace Ecommerce.Migrations
             {
                 var store = new UserStore<ApplicationUser>(context);
                 var manager = new UserManager<ApplicationUser>(store);
-                var user = new ApplicationUser { UserName = "admin", Email = "admin@gmail.com" };
+                var user = new ApplicationUser { UserName = "admin@gmail.com", Email = "admin@gmail.com" };
 
                 manager.Create(user, "P@ssw0rd");
                 manager.AddToRole(user.Id, "Admin");
@@ -451,7 +451,7 @@ namespace Ecommerce.Migrations
             {
                 var store = new UserStore<ApplicationUser>(context);
                 var manager = new UserManager<ApplicationUser>(store);
-                var user = new ApplicationUser { UserName = "manager", Email = "manager@gmail.com" };
+                var user = new ApplicationUser { UserName = "manager@gmail.com", Email = "manager@gmail.com" };
 
                 manager.Create(user, "P@ssw0rd");
                 manager.AddToRole(user.Id, "Manager");
@@ -470,7 +470,7 @@ namespace Ecommerce.Migrations
             {
                 var store = new UserStore<ApplicationUser>(context);
                 var manager = new UserManager<ApplicationUser>(store);
-                var user = new ApplicationUser { UserName = "user", Email = "user@gmail.com" };
+                var user = new ApplicationUser { UserName = "user@gmail.com", Email = "user@gmail.com" };
 
                 manager.Create(user, "P@ssw0rd");
                 manager.AddToRole(user.Id, "User");
