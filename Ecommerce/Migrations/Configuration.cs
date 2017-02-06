@@ -20,7 +20,8 @@ namespace Ecommerce.Migrations
 
         protected override void Seed(Ecommerce.DataAccessLayer.Data context)
         {
-            CreateUsers(context);
+            ApplicationDbContext userContext = new ApplicationDbContext();
+            CreateUsers(userContext);
             CreateUserDetails(context);
             CreateSuppliers(context);
             CreatePayments(context);
@@ -416,7 +417,7 @@ namespace Ecommerce.Migrations
             context.SaveChanges();
         }
 
-        public void CreateUsers(DataAccessLayer.Data context)
+        public void CreateUsers(Models.ApplicationDbContext context)
         {
             if (!context.Roles.Any(r => r.Name == "Admin"))
             {
