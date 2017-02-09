@@ -7,16 +7,20 @@ using System.Web;
 
 namespace Ecommerce.Models
 {
-    public class Category
+    public class ProductCategory
     {
         [Required]
         public int Id { get; set; }
 
         [Required]
-        public string Name { get; set; }
+        [ForeignKey("Product")]
+        public int ProductId { get; set; }
 
         [Required]
-        public string Keywords { get; set; }
-        //public string Type {get;set;}
+        [ForeignKey("Category")]
+        public int CategoryId { get; set; }
+
+        public virtual Product Product { get; set; }
+        public virtual Category Category { get; set; }
     }
 }

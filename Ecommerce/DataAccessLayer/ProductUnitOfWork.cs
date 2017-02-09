@@ -9,6 +9,7 @@ namespace Ecommerce.DataAccessLayer
     {
         private ProductRepository productRepository;
         private SupplierRepository supplierRepository;
+        private CategoryRepository categoryRepository;
         private Data context = new Data();
 
         public ProductRepository ProductRepository
@@ -34,6 +35,19 @@ namespace Ecommerce.DataAccessLayer
                     this.supplierRepository = new SupplierRepository(context);
                 }
                 return supplierRepository;
+            }
+        }
+
+        public CategoryRepository CategoryRepository
+        {
+            get
+            {
+
+                if (this.categoryRepository == null)
+                {
+                    this.categoryRepository = new CategoryRepository(context);
+                }
+                return categoryRepository;
             }
         }
 
