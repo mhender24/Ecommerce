@@ -77,6 +77,7 @@ namespace Ecommerce.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             var product = _db.ProductRepository.GetByID(id);
+            ViewBag.Categories = _db.CategoryRepository.GetCategoryByProductId(id);
             if (product == null)
             {
                 return HttpNotFound();

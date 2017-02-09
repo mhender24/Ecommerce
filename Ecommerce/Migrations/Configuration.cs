@@ -157,10 +157,12 @@ namespace Ecommerce.Migrations
             var productCategory = new List<ProductCategory>
             {
                 new ProductCategory {ProductId = context.Products.First(u => u.Name == "mouse1").Id, CategoryId = context.Categories.First(u => u.Name == "Mouse").Id },
+                new ProductCategory {ProductId = context.Products.First(u => u.Name == "mouse1").Id, CategoryId = context.Categories.First(u => u.Name == "Computer").Id },
                 new ProductCategory {ProductId = context.Products.First(u => u.Name == "mouse2").Id, CategoryId = context.Categories.First(u => u.Name == "Mouse").Id },
                 new ProductCategory {ProductId = context.Products.First(u => u.Name == "mouse3").Id, CategoryId = context.Categories.First(u => u.Name == "Mouse").Id },
                 new ProductCategory {ProductId = context.Products.First(u => u.Name == "mouse4").Id, CategoryId = context.Categories.First(u => u.Name == "Mouse").Id },
                 new ProductCategory {ProductId = context.Products.First(u => u.Name == "trackpad1").Id, CategoryId = context.Categories.First(u => u.Name == "Track Pad").Id },
+                new ProductCategory {ProductId = context.Products.First(u => u.Name == "trackpad1").Id, CategoryId = context.Categories.First(u => u.Name == "Mouse").Id },
                 new ProductCategory {ProductId = context.Products.First(u => u.Name == "trackpad2").Id, CategoryId = context.Categories.First(u => u.Name == "Track Pad").Id },
                 new ProductCategory {ProductId = context.Products.First(u => u.Name == "trackpad3").Id, CategoryId = context.Categories.First(u => u.Name == "Track Pad").Id },
                 new ProductCategory {ProductId = context.Products.First(u => u.Name == "trackpad4").Id, CategoryId = context.Categories.First(u => u.Name == "Track Pad").Id }
