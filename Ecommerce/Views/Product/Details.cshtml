@@ -42,6 +42,16 @@
             @Html.DisplayFor(model => model.Price)
         </dd>
 
+        <dt>
+            Categories
+        </dt>
+        @foreach (var category in ViewBag.Categories)
+        { 
+            <dd>
+                @category.Name
+            </dd>
+        }
+
     </dl>
 </div>
 <p>
