@@ -7,13 +7,13 @@ namespace Ecommerce.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class remove_product_detail : IMigrationMetadata
+    public sealed partial class init : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(remove_product_detail));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(init));
         
         string IMigrationMetadata.Id
         {
-            get { return "201702091836546_remove_product_detail"; }
+            get { return "201702092243560_init"; }
         }
         
         string IMigrationMetadata.Source

@@ -22,12 +22,13 @@ namespace Ecommerce.Migrations
         {
             ApplicationDbContext userContext = new ApplicationDbContext();
             CreateUsers(userContext);
-            CreateUserDetails(context);
+            CreateUserDetails(context, userContext);
             CreateSuppliers(context);
             CreatePayments(context);
             CreateAddresses(context);
             CreateProducts(context);
             CreateCategories(context);
+            CreateProductCategories(context);
             CreateOrders(context);
             CreateOrderDetails(context);
         }
@@ -54,17 +55,17 @@ namespace Ecommerce.Migrations
                 new OrderDetail
                 {
                     OrderId = context.Orders.First(u => u.Cost == 223.52).Id,
-                    ProductId = context.Products.First(u => u.Name == "mouse7").Id
+                    ProductId = context.Products.First(u => u.Name == "trackpad3").Id
                 },
                 new OrderDetail
                 {
                     OrderId = context.Orders.First(u => u.Cost == 223.52).Id,
-                    ProductId = context.Products.First(u => u.Name == "mouse5").Id
+                    ProductId = context.Products.First(u => u.Name == "trackpad1").Id
                 },
                 new OrderDetail
                 {
                     OrderId = context.Orders.First(u => u.Cost == 12.52).Id,
-                    ProductId = context.Products.First(u => u.Name == "mouse8").Id
+                    ProductId = context.Products.First(u => u.Name == "trackpad4").Id
                 },
                 new OrderDetail
                 {
@@ -89,12 +90,12 @@ namespace Ecommerce.Migrations
                 new OrderDetail
                 {
                     OrderId = context.Orders.First(u => u.Cost == 74.52).Id,
-                    ProductId = context.Products.First(u => u.Name == "mouse5").Id
+                    ProductId = context.Products.First(u => u.Name == "trackpad1").Id
                 },
                 new OrderDetail
                 {
                     OrderId = context.Orders.First(u => u.Cost == 13.52).Id,
-                    ProductId = context.Products.First(u => u.Name == "mouse6").Id
+                    ProductId = context.Products.First(u => u.Name == "trackpad2").Id
                 },
                 new OrderDetail
                 {
@@ -104,17 +105,17 @@ namespace Ecommerce.Migrations
                 new OrderDetail
                 {
                     OrderId = context.Orders.First(u => u.Cost == 1235.52).Id,
-                    ProductId = context.Products.First(u => u.Name == "mouse7").Id
+                    ProductId = context.Products.First(u => u.Name == "trackpad3").Id
                 },
                 new OrderDetail
                 {
                     OrderId = context.Orders.First(u => u.Cost == 226.23).Id,
-                    ProductId = context.Products.First(u => u.Name == "mouse5").Id
+                    ProductId = context.Products.First(u => u.Name == "trackpad1").Id
                 },
                 new OrderDetail
                 {
                     OrderId = context.Orders.First(u => u.Cost == 12.52).Id,
-                    ProductId = context.Products.First(u => u.Name == "mouse6").Id
+                    ProductId = context.Products.First(u => u.Name == "trackpad2").Id
                 },
             };
             orderDetails.ForEach(s => context.OrderDetails.Add(s));
@@ -143,25 +144,28 @@ namespace Ecommerce.Migrations
         {
             var categories = new List<Category>
             {
-                new Category {Type = "Computer", ProductId = context.Products.First(u => u.Name == "mouse1").Id},
-                new Category {Type = "Mouse", ProductId = context.Products.First(u => u.Name == "mouse1").Id},
-                new Category {Type = "Computer", ProductId = context.Products.First(u => u.Name == "mouse2").Id},
-                new Category {Type = "Computer", ProductId = context.Products.First(u => u.Name == "mouse3").Id},
-                new Category {Type = "Mouse", ProductId = context.Products.First(u => u.Name == "mouse3").Id},
-                new Category {Type = "Computer", ProductId = context.Products.First(u => u.Name == "mouse4").Id},
-                new Category {Type = "Mouse", ProductId = context.Products.First(u => u.Name == "mouse4").Id},
-                new Category {Type = "Smelly", ProductId = context.Products.First(u => u.Name == "mouse4").Id},
-                new Category {Type = "Cheap", ProductId = context.Products.First(u => u.Name == "mouse4").Id},
-                new Category {Type = "Computer", ProductId = context.Products.First(u => u.Name == "mouse5").Id},
-                new Category {Type = "Computer", ProductId = context.Products.First(u => u.Name == "mouse6").Id},
-                new Category {Type = "Mouse", ProductId = context.Products.First(u => u.Name == "mouse6").Id},
-                new Category {Type = "Computer", ProductId = context.Products.First(u => u.Name == "mouse7").Id},
-                new Category {Type = "Mouse", ProductId = context.Products.First(u => u.Name == "mouse7").Id},
-                new Category {Type = "Computer", ProductId = context.Products.First(u => u.Name == "mouse8").Id},
-                new Category {Type = "Mouse", ProductId = context.Products.First(u => u.Name == "mouse8").Id},
-                new Category {Type = "Track Pad", ProductId = context.Products.First(u => u.Name == "mouse8").Id},
+                new Category {Name = "Computer", Keywords = "computer, hardware, cpu"},
+                new Category {Name = "Mouse", Keywords = "ergonomic, mouse, hardware"},
+                new Category {Name = "Track Pad", Keywords = "track, pad, mouse" }
             };
             categories.ForEach(s => context.Categories.AddOrUpdate(s));
+            context.SaveChanges();
+        }
+
+        public void CreateProductCategories(DataAccessLayer.Data context)
+        {
+            var productCategory = new List<ProductCategory>
+            {
+                new ProductCategory {ProductId = context.Products.First(u => u.Name == "mouse1").Id, CategoryId = context.Categories.First(u => u.Name == "Mouse").Id },
+                new ProductCategory {ProductId = context.Products.First(u => u.Name == "mouse2").Id, CategoryId = context.Categories.First(u => u.Name == "Mouse").Id },
+                new ProductCategory {ProductId = context.Products.First(u => u.Name == "mouse3").Id, CategoryId = context.Categories.First(u => u.Name == "Mouse").Id },
+                new ProductCategory {ProductId = context.Products.First(u => u.Name == "mouse4").Id, CategoryId = context.Categories.First(u => u.Name == "Mouse").Id },
+                new ProductCategory {ProductId = context.Products.First(u => u.Name == "trackpad1").Id, CategoryId = context.Categories.First(u => u.Name == "Track Pad").Id },
+                new ProductCategory {ProductId = context.Products.First(u => u.Name == "trackpad2").Id, CategoryId = context.Categories.First(u => u.Name == "Track Pad").Id },
+                new ProductCategory {ProductId = context.Products.First(u => u.Name == "trackpad3").Id, CategoryId = context.Categories.First(u => u.Name == "Track Pad").Id },
+                new ProductCategory {ProductId = context.Products.First(u => u.Name == "trackpad4").Id, CategoryId = context.Categories.First(u => u.Name == "Track Pad").Id }
+            };
+            productCategory.ForEach(p => context.ProductCategory.AddOrUpdate(p));
             context.SaveChanges();
         }
 
@@ -200,7 +204,7 @@ namespace Ecommerce.Migrations
                 },
                 new Product
                 {
-                    Name = "mouse5",
+                    Name = "trackpad1",
                     Price = 40.50,
                     ProductImage =  "/image/chicken.jpg",
                     SupplierId = context.Suppliers.First(u => u.Name == "Newegg").Id
@@ -208,21 +212,21 @@ namespace Ecommerce.Migrations
                 },
                 new Product
                 {
-                    Name = "mouse6",
+                    Name = "trackpad2",
                     Price = 2348.50,
                     ProductImage = "/image/cow.jpg",
                     SupplierId = context.Suppliers.First(u => u.Name == "Newegg").Id
                 },
                 new Product
                 {
-                    Name = "mouse7",
+                    Name = "trackpad3",
                     Price = 35.50,
                     ProductImage = "/image/monkey.jpg",
                     SupplierId = context.Suppliers.First(u => u.Name == "Dunhams").Id
                 },
                 new Product
                 {
-                    Name = "mouse8",
+                    Name = "trackpad4",
                     Price = 10.50,
                     ProductImage = "/image/hippo.jpg",
                     SupplierId = context.Suppliers.First(u => u.Name == "Dunhams").Id
@@ -369,7 +373,7 @@ namespace Ecommerce.Migrations
             context.SaveChanges();
         }
 
-        public void CreateUserDetails(DataAccessLayer.Data context)
+        public void CreateUserDetails(DataAccessLayer.Data context, Models.ApplicationDbContext userContext)
         {
             var customers = new List<Customer>
             {
@@ -378,21 +382,21 @@ namespace Ecommerce.Migrations
                     FirstName = "Marcel",
                     LastName = "Henderson",
                     Phone = "734-555-8282",
-                    UserId = context.Users.First(u => u.UserName == "admin").Id
+                    UserId = userContext.Users.First(u => u.UserName == "admin@gmail.com").Id
                 },
                 new Customer
                 {
                     FirstName = "Matt",
                     LastName = "Bolin",
                     Phone = "734-555-1212",
-                    UserId = context.Users.First(u => u.UserName == "manager").Id
+                    UserId = userContext.Users.First(u => u.UserName == "manager@gmail.com").Id
                 },
                 new Customer
                 {
                     FirstName = "Joe",
                     LastName = "Schmo",
                     Phone = "734-555-6343",
-                    UserId = context.Users.First(u => u.UserName == "user").Id
+                    UserId = userContext.Users.First(u => u.UserName == "user@gmail.com").Id
                 }
             };
             customers.ForEach(s => context.Customers.AddOrUpdate(p => p.LastName, s));
@@ -410,7 +414,7 @@ namespace Ecommerce.Migrations
                 manager.Create(role);
             }
 
-            if (!context.Users.Any(u => u.UserName == "admin"))
+            if (!context.Users.Any(u => u.UserName == "admin@gmail.com"))
             {
                 var store = new UserStore<ApplicationUser>(context);
                 var manager = new UserManager<ApplicationUser>(store);
@@ -429,7 +433,7 @@ namespace Ecommerce.Migrations
                 manager.Create(role);
             }
 
-            if (!context.Users.Any(u => u.UserName == "manager"))
+            if (!context.Users.Any(u => u.UserName == "manager@gmail.com"))
             {
                 var store = new UserStore<ApplicationUser>(context);
                 var manager = new UserManager<ApplicationUser>(store);
@@ -448,7 +452,7 @@ namespace Ecommerce.Migrations
                 manager.Create(role);
             }
 
-            if (!context.Users.Any(u => u.UserName == "user"))
+            if (!context.Users.Any(u => u.UserName == "user@gmail.com"))
             {
                 var store = new UserStore<ApplicationUser>(context);
                 var manager = new UserManager<ApplicationUser>(store);

@@ -3,7 +3,7 @@ namespace Ecommerce.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class Initial : DbMigration
+    public partial class init : DbMigration
     {
         public override void Up()
         {
@@ -33,11 +33,11 @@ namespace Ecommerce.Migrations
                         Phone = c.String(),
                     })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.ApplicationUser", t => t.UserId, cascadeDelete: true)
+                .ForeignKey("dbo.AspNetUsers", t => t.UserId, cascadeDelete: true)
                 .Index(t => t.UserId);
             
             CreateTable(
-                "dbo.ApplicationUser",
+                "dbo.AspNetUsers",
                 c => new
                     {
                         Id = c.String(nullable: false, maxLength: 128),
@@ -56,7 +56,7 @@ namespace Ecommerce.Migrations
                 .PrimaryKey(t => t.Id);
             
             CreateTable(
-                "dbo.IdentityUserClaim",
+                "dbo.AspNetUserClaims",
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
@@ -66,11 +66,11 @@ namespace Ecommerce.Migrations
                         ApplicationUser_Id = c.String(maxLength: 128),
                     })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.ApplicationUser", t => t.ApplicationUser_Id)
+                .ForeignKey("dbo.AspNetUsers", t => t.ApplicationUser_Id)
                 .Index(t => t.ApplicationUser_Id);
             
             CreateTable(
-                "dbo.IdentityUserLogin",
+                "dbo.AspNetUserLogins",
                 c => new
                     {
                         UserId = c.String(nullable: false, maxLength: 128),
@@ -79,11 +79,11 @@ namespace Ecommerce.Migrations
                         ApplicationUser_Id = c.String(maxLength: 128),
                     })
                 .PrimaryKey(t => t.UserId)
-                .ForeignKey("dbo.ApplicationUser", t => t.ApplicationUser_Id)
+                .ForeignKey("dbo.AspNetUsers", t => t.ApplicationUser_Id)
                 .Index(t => t.ApplicationUser_Id);
             
             CreateTable(
-                "dbo.IdentityUserRole",
+                "dbo.AspNetUserRoles",
                 c => new
                     {
                         RoleId = c.String(nullable: false, maxLength: 128),
@@ -92,8 +92,8 @@ namespace Ecommerce.Migrations
                         IdentityRole_Id = c.String(maxLength: 128),
                     })
                 .PrimaryKey(t => new { t.RoleId, t.UserId })
-                .ForeignKey("dbo.ApplicationUser", t => t.ApplicationUser_Id)
-                .ForeignKey("dbo.IdentityRole", t => t.IdentityRole_Id)
+                .ForeignKey("dbo.AspNetUsers", t => t.ApplicationUser_Id)
+                .ForeignKey("dbo.AspNetRoles", t => t.IdentityRole_Id)
                 .Index(t => t.ApplicationUser_Id)
                 .Index(t => t.IdentityRole_Id);
             
@@ -102,50 +102,8 @@ namespace Ecommerce.Migrations
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
-                        ProductId = c.Int(nullable: false),
-                        Type = c.String(nullable: false),
-                    })
-                .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.Product", t => t.ProductId, cascadeDelete: true)
-                .Index(t => t.ProductId);
-            
-            CreateTable(
-                "dbo.Product",
-                c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        SupplierId = c.Int(nullable: false),
-                        ProductDetailId = c.Int(nullable: false),
                         Name = c.String(nullable: false),
-                        Price = c.Double(nullable: false),
-                    })
-                .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.ProductDetail", t => t.ProductDetailId, cascadeDelete: true)
-                .ForeignKey("dbo.Supplier", t => t.SupplierId, cascadeDelete: true)
-                .Index(t => t.SupplierId)
-                .Index(t => t.ProductDetailId);
-            
-            CreateTable(
-                "dbo.ProductDetail",
-                c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        Description = c.String(nullable: false),
-                        ProductImage = c.String(nullable: false),
-                    })
-                .PrimaryKey(t => t.Id);
-            
-            CreateTable(
-                "dbo.Supplier",
-                c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        Name = c.String(nullable: false),
-                        Phone = c.String(nullable: false),
-                        Address = c.String(nullable: false),
-                        City = c.String(nullable: false),
-                        State = c.String(nullable: false),
-                        Zipcode = c.String(nullable: false),
+                        Keywords = c.String(nullable: false),
                     })
                 .PrimaryKey(t => t.Id);
             
@@ -176,6 +134,35 @@ namespace Ecommerce.Migrations
                 .Index(t => t.CustomerId);
             
             CreateTable(
+                "dbo.Product",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        SupplierId = c.Int(nullable: false),
+                        Name = c.String(nullable: false),
+                        Price = c.Double(nullable: false),
+                        Description = c.String(),
+                        ProductImage = c.String(),
+                    })
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.Supplier", t => t.SupplierId, cascadeDelete: true)
+                .Index(t => t.SupplierId);
+            
+            CreateTable(
+                "dbo.Supplier",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        Name = c.String(nullable: false),
+                        Phone = c.String(nullable: false),
+                        Address = c.String(nullable: false),
+                        City = c.String(nullable: false),
+                        State = c.String(nullable: false),
+                        Zipcode = c.String(nullable: false),
+                    })
+                .PrimaryKey(t => t.Id);
+            
+            CreateTable(
                 "dbo.Payment",
                 c => new
                     {
@@ -195,7 +182,21 @@ namespace Ecommerce.Migrations
                 .Index(t => t.CustomerId);
             
             CreateTable(
-                "dbo.IdentityRole",
+                "dbo.ProductCategory",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        ProductId = c.Int(nullable: false),
+                        CategoryId = c.Int(nullable: false),
+                    })
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.Category", t => t.CategoryId, cascadeDelete: true)
+                .ForeignKey("dbo.Product", t => t.ProductId, cascadeDelete: true)
+                .Index(t => t.ProductId)
+                .Index(t => t.CategoryId);
+            
+            CreateTable(
+                "dbo.AspNetRoles",
                 c => new
                     {
                         Id = c.String(nullable: false, maxLength: 128),
@@ -208,25 +209,25 @@ namespace Ecommerce.Migrations
         public override void Down()
         {
             DropForeignKey("dbo.IdentityUserRole", "IdentityRole_Id", "dbo.IdentityRole");
+            DropForeignKey("dbo.ProductCategory", "ProductId", "dbo.Product");
+            DropForeignKey("dbo.ProductCategory", "CategoryId", "dbo.Category");
             DropForeignKey("dbo.Payment", "CustomerId", "dbo.Customer");
             DropForeignKey("dbo.OrderDetail", "ProductId", "dbo.Product");
+            DropForeignKey("dbo.Product", "SupplierId", "dbo.Supplier");
             DropForeignKey("dbo.OrderDetail", "OrderId", "dbo.Order");
             DropForeignKey("dbo.Order", "CustomerId", "dbo.Customer");
-            DropForeignKey("dbo.Category", "ProductId", "dbo.Product");
-            DropForeignKey("dbo.Product", "SupplierId", "dbo.Supplier");
-            DropForeignKey("dbo.Product", "ProductDetailId", "dbo.ProductDetail");
             DropForeignKey("dbo.Address", "CustomerId", "dbo.Customer");
             DropForeignKey("dbo.Customer", "UserId", "dbo.ApplicationUser");
             DropForeignKey("dbo.IdentityUserRole", "ApplicationUser_Id", "dbo.ApplicationUser");
             DropForeignKey("dbo.IdentityUserLogin", "ApplicationUser_Id", "dbo.ApplicationUser");
             DropForeignKey("dbo.IdentityUserClaim", "ApplicationUser_Id", "dbo.ApplicationUser");
+            DropIndex("dbo.ProductCategory", new[] { "CategoryId" });
+            DropIndex("dbo.ProductCategory", new[] { "ProductId" });
             DropIndex("dbo.Payment", new[] { "CustomerId" });
+            DropIndex("dbo.Product", new[] { "SupplierId" });
             DropIndex("dbo.Order", new[] { "CustomerId" });
             DropIndex("dbo.OrderDetail", new[] { "ProductId" });
             DropIndex("dbo.OrderDetail", new[] { "OrderId" });
-            DropIndex("dbo.Product", new[] { "ProductDetailId" });
-            DropIndex("dbo.Product", new[] { "SupplierId" });
-            DropIndex("dbo.Category", new[] { "ProductId" });
             DropIndex("dbo.IdentityUserRole", new[] { "IdentityRole_Id" });
             DropIndex("dbo.IdentityUserRole", new[] { "ApplicationUser_Id" });
             DropIndex("dbo.IdentityUserLogin", new[] { "ApplicationUser_Id" });
@@ -234,12 +235,12 @@ namespace Ecommerce.Migrations
             DropIndex("dbo.Customer", new[] { "UserId" });
             DropIndex("dbo.Address", new[] { "CustomerId" });
             DropTable("dbo.IdentityRole");
+            DropTable("dbo.ProductCategory");
             DropTable("dbo.Payment");
+            DropTable("dbo.Supplier");
+            DropTable("dbo.Product");
             DropTable("dbo.Order");
             DropTable("dbo.OrderDetail");
-            DropTable("dbo.Supplier");
-            DropTable("dbo.ProductDetail");
-            DropTable("dbo.Product");
             DropTable("dbo.Category");
             DropTable("dbo.IdentityUserRole");
             DropTable("dbo.IdentityUserLogin");
