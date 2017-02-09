@@ -19,7 +19,6 @@ namespace Ecommerce.DataAccessLayer
             public DbSet<OrderDetail> OrderDetails { get; set; }
             public DbSet<Payment> Payments { get; set; }
             public DbSet<Product> Products { get; set; }
-            public DbSet<ProductDetail> ProductDetails { get; set; }
             public DbSet<Supplier> Suppliers { get; set; }
             public DbSet<ApplicationUser> Users { get; set; }
             public DbSet<IdentityRole> Roles { get; set; }

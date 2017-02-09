@@ -26,7 +26,6 @@ namespace Ecommerce.Migrations
             CreateSuppliers(context);
             CreatePayments(context);
             CreateAddresses(context);
-            CreateProductDetails(context);
             CreateProducts(context);
             CreateCategories(context);
             CreateOrders(context);
@@ -174,14 +173,14 @@ namespace Ecommerce.Migrations
                 {
                     Name = "mouse1",
                     Price = 100.50,
-                    ProductDetailId = context.ProductDetails.First(u => u.ProductImage == "/image/dog.jpg").Id,
+                    ProductImage = "/image/dog.jpg",
                     SupplierId = context.Suppliers.First(u => u.Name == "BestBuy").Id
                 },
                 new Product
                 {
                     Name = "mouse2",
                     Price = 20.50,
-                    ProductDetailId = context.ProductDetails.First(u => u.ProductImage == "/image/cat.jpg").Id,
+                    ProductImage = "/image/cat.jpg",
                     SupplierId = context.Suppliers.First(u => u.Name == "BestBuy").Id
 
                 },
@@ -189,21 +188,21 @@ namespace Ecommerce.Migrations
                 {
                     Name = "mouse3",
                     Price = 50.50,
-                    ProductDetailId = context.ProductDetails.First(u => u.ProductImage == "/image/horse.jpg").Id,
+                    ProductImage = "/image/horse.jpg",
                     SupplierId = context.Suppliers.First(u => u.Name == "BestBuy").Id
                 },
                 new Product
                 {
                     Name = "mouse4",
                     Price = 3.50,
-                    ProductDetailId = context.ProductDetails.First(u => u.ProductImage == "/image/pig.jpg").Id,
+                    ProductImage = "/image/pig.jpg",
                     SupplierId = context.Suppliers.First(u => u.Name == "Newegg").Id
                 },
                 new Product
                 {
                     Name = "mouse5",
                     Price = 40.50,
-                    ProductDetailId = context.ProductDetails.First(u => u.ProductImage == "/image/chicken.jpg").Id,
+                    ProductImage =  "/image/chicken.jpg",
                     SupplierId = context.Suppliers.First(u => u.Name == "Newegg").Id
 
                 },
@@ -211,42 +210,25 @@ namespace Ecommerce.Migrations
                 {
                     Name = "mouse6",
                     Price = 2348.50,
-                    ProductDetailId = context.ProductDetails.First(u => u.ProductImage == "/image/cow.jpg").Id,
+                    ProductImage = "/image/cow.jpg",
                     SupplierId = context.Suppliers.First(u => u.Name == "Newegg").Id
                 },
                 new Product
                 {
                     Name = "mouse7",
                     Price = 35.50,
-                    ProductDetailId = context.ProductDetails.First(u => u.ProductImage == "/image/monkey.jpg").Id,
+                    ProductImage = "/image/monkey.jpg",
                     SupplierId = context.Suppliers.First(u => u.Name == "Dunhams").Id
                 },
                 new Product
                 {
                     Name = "mouse8",
                     Price = 10.50,
-                    ProductDetailId = context.ProductDetails.First(u => u.ProductImage == "/image/hippo.jpg").Id,
+                    ProductImage = "/image/hippo.jpg",
                     SupplierId = context.Suppliers.First(u => u.Name == "Dunhams").Id
                 },
             };
             products.ForEach(s => context.Products.AddOrUpdate(p => p.Name, s));
-            context.SaveChanges();
-        }
-
-        public void CreateProductDetails(DataAccessLayer.Data context)
-        {
-            var details = new List<ProductDetail>
-            {
-                new ProductDetail {Description = "A really awesome mouse", ProductImage = "/image/dog.jpg"},
-                new ProductDetail {Description = "A really bad mouse", ProductImage = "/image/cat.jpg"},
-                new ProductDetail {Description = "A really okay mouse", ProductImage = "/image/horse.jpg"},
-                new ProductDetail {Description = "A really smelly mouse", ProductImage = "/image/pig.jpg"},
-                new ProductDetail {Description = "A really clean mouse", ProductImage = "/image/chicken.jpg"},
-                new ProductDetail {Description = "A really ergonomic mouse", ProductImage = "/image/cow.jpg"},
-                new ProductDetail {Description = "A really standard mouse", ProductImage = "/image/monkey.jpg"},
-                new ProductDetail {Description = "A really baby mouse", ProductImage = "/image/hippo.jpg"}
-            };
-            details.ForEach(s => context.ProductDetails.AddOrUpdate(p => p.Description, s));
             context.SaveChanges();
         }
 

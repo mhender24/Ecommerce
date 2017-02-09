@@ -227,6 +227,7 @@
     <Compile Include="DataAccessLayer\Data.cs" />
     <Compile Include="DataAccessLayer\OrderRepository.cs" />
     <Compile Include="DataAccessLayer\ProductRepository.cs" />
+    <Compile Include="DataAccessLayer\ProductUnitOfWork.cs" />
     <Compile Include="DataAccessLayer\SupplierRepository.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -238,6 +239,10 @@
     <Compile Include="Migrations\201702061655483_fix.cs" />
     <Compile Include="Migrations\201702061655483_fix.Designer.cs">
       <DependentUpon>201702061655483_fix.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201702091836546_remove_product_detail.cs" />
+    <Compile Include="Migrations\201702091836546_remove_product_detail.Designer.cs">
+      <DependentUpon>201702091836546_remove_product_detail.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -251,7 +256,6 @@
     <Compile Include="Models\OrderDetail.cs" />
     <Compile Include="Models\Payment.cs" />
     <Compile Include="Models\Product.cs" />
-    <Compile Include="Models\ProductDetail.cs" />
     <Compile Include="Models\Supplier.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
@@ -348,6 +352,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201702061655483_fix.resx">
       <DependentUpon>201702061655483_fix.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201702091836546_remove_product_detail.resx">
+      <DependentUpon>201702091836546_remove_product_detail.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
