@@ -16,11 +16,11 @@ namespace Ecommerce.Controllers
     [AuthLog(Roles = "Admin,Manager")]
     public class ProductController : Controller
     {
-        private readonly ProductRepository _db;
+        private readonly ProductUnitOfWork _db;
 
         public ProductController()
         {
-            _db = new ProductRepository(new Data());
+            _db = new ProductUnitOfWork();
         }
 
         [AllowAnonymous]
@@ -44,9 +44,9 @@ namespace Ecommerce.Controllers
 
 
             if (!String.IsNullOrEmpty(searchString))
-                products = _db.SearchProduct(searchString);
+                products = _db.ProductRepository.SearchProduct(searchString);
             else
-               products = _db.Get();
+               products = _db.ProductRepository.Get();
 
             switch (sortOrder)
             {
@@ -76,7 +76,7 @@ namespace Ecommerce.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var product = _db.GetByID(id);
+            var product = _db.ProductRepository.GetByID(id);
             if (product == null)
             {
                 return HttpNotFound();
@@ -86,16 +86,17 @@ namespace Ecommerce.Controllers
 
         public ActionResult Create()
         {
+            ViewBag.SupplierId = new SelectList(_db.SupplierRepository.Get(), "Id", "Name");
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,SupplierId,ProductDetailId,Name,Price")] Product product)
+        public ActionResult Create([Bind(Include = "Id,SupplierId,Name,Price,Description,ProductImage")] Product product)
         {
             if (ModelState.IsValid)
             {
-                _db.Insert(product);
+                _db.ProductRepository.Insert(product);
                 _db.Save();
                 return RedirectToAction("Index");
             }
@@ -108,21 +109,22 @@ namespace Ecommerce.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var product = _db.GetByID(id);
+            var product = _db.ProductRepository.GetByID(id);
             if (product == null)
             {
                 return HttpNotFound();
             }
+            ViewBag.SupplierId = new SelectList(_db.SupplierRepository.Get(), "Id", "Name");
             return View(product);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,SupplierId,ProductDetailId,Name,Price")] Product product)
+        public ActionResult Edit([Bind(Include = "Id,SupplierId,Name,Price,Description,ProductImage")] Product product)
         {
             if (ModelState.IsValid)
             {
-                _db.Update(product);
+                _db.ProductRepository.Update(product);
                 _db.Save();
                 return RedirectToAction("Index");
             }
@@ -135,7 +137,7 @@ namespace Ecommerce.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var product = _db.GetByID(id);
+            var product = _db.ProductRepository.GetByID(id);
             if (product == null)
             {
                 return HttpNotFound();
@@ -147,19 +149,10 @@ namespace Ecommerce.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            var product = _db.GetByID(id);
-            _db.Delete(product);
+            var product = _db.ProductRepository.GetByID(id);
+            _db.ProductRepository.Delete(product);
             _db.Save();
             return RedirectToAction("Index");
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _db.Dispose();
-            }
-            base.Dispose(disposing);
         }
     }
 }

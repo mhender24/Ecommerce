@@ -17,17 +17,16 @@ namespace Ecommerce.Models
         public int SupplierId { get; set; }
 
         [Required]
-        [ForeignKey("ProductDetail")]
-        public int ProductDetailId { get; set; }
-
-        [Required]
         public string Name { get; set; }
 
         [Required]
         public double Price { get; set; }
 
+        public string Description { get; set; }
+
+        public string ProductImage { get; set; }
+
         public virtual Supplier Supplier { get; set; }
-        public virtual ProductDetail ProductDetail { get; set; }
 
     }
 }

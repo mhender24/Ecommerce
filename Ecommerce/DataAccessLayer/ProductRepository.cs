@@ -14,7 +14,7 @@ namespace Ecommerce.DataAccessLayer
         {
             return (from p in context.Products
                     where p.Name.ToUpper().Contains(filter.ToUpper()) ||
-                         p.ProductDetail.Description.ToUpper().Contains(filter.ToUpper())
+                         p.Description.ToUpper().Contains(filter.ToUpper())
                     select p
                    );
         }
