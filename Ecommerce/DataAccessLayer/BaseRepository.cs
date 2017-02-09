@@ -7,10 +7,11 @@ using System.Web;
 
 namespace Ecommerce.DataAccessLayer
 {
-    public class BaseRepository<TEntity>  where TEntity : class 
+    public class BaseRepository<TEntity> : IDisposable  where TEntity : class 
     {
         internal Data context;
         internal DbSet<TEntity> dbSet;
+        private bool disposed = false;
 
         public BaseRepository(Data context)
         {
@@ -85,6 +86,24 @@ namespace Ecommerce.DataAccessLayer
         public void Save()
         {
             context.SaveChanges();
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!this.disposed)
+            {
+                if (disposing)
+                {
+                    context.Dispose();
+                }
+            }
+            this.disposed = true;
         }
     }
 }

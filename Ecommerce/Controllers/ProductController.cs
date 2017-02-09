@@ -8,26 +8,75 @@ using System.Web;
 using System.Web.Mvc;
 using Ecommerce.DataAccessLayer;
 using Ecommerce.Models;
+using Ecommerce.CustomFilters;
+using PagedList;
 
 namespace Ecommerce.Controllers
 {
+    [AuthLog(Roles = "Admin,Manager")]
     public class ProductController : Controller
     {
-        private readonly Data _db = new Data();
+        private readonly ProductRepository _db;
 
-        public ActionResult Index()
+        public ProductController()
         {
-            var products = _db.Products.Include(p => p.ProductDetail).Include(p => p.Supplier);
-            return View(products.ToList());
+            _db = new ProductRepository(new Data());
         }
 
+        [AllowAnonymous]
+        public ViewResult Index(string sortOrder, string currentFilter, string searchString, int? page)
+        {
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.NameSortParam = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewBag.PriceSortParam = sortOrder == "Price" ? "price_desc" : "Price";
+            IEnumerable<Product> products;
+
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
+
+            if (!String.IsNullOrEmpty(searchString))
+                products = _db.SearchProduct(searchString);
+            else
+               products = _db.Get();
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    products = products.OrderByDescending(p => p.Name);
+                    break;
+                case "Price":
+                    products = products.OrderBy(p => p.Price);
+                    break;
+                case "price_desc":
+                    products = products.OrderByDescending(p => p.Price);
+                    break;
+                default:  // Name ascending 
+                    products = products.OrderBy(s => s.Name);
+                    break;
+            }
+
+            int pageSize = 5;
+            int pageNumber = (page ?? 1);
+            return View(products.ToPagedList(pageNumber, pageSize));
+        }
+
+        [AllowAnonymous]
         public ActionResult Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var product = _db.Products.Find(id);
+            var product = _db.GetByID(id);
             if (product == null)
             {
                 return HttpNotFound();
@@ -37,8 +86,6 @@ namespace Ecommerce.Controllers
 
         public ActionResult Create()
         {
-            ViewBag.ProductDetailId = new SelectList(_db.ProductDetails, "Id", "Description");
-            ViewBag.SupplierId = new SelectList(_db.Suppliers, "Id", "Name");
             return View();
         }
 
@@ -48,13 +95,10 @@ namespace Ecommerce.Controllers
         {
             if (ModelState.IsValid)
             {
-                _db.Products.Add(product);
-                _db.SaveChanges();
+                _db.Insert(product);
+                _db.Save();
                 return RedirectToAction("Index");
             }
-
-            ViewBag.ProductDetailId = new SelectList(_db.ProductDetails, "Id", "Description", product.ProductDetailId);
-            ViewBag.SupplierId = new SelectList(_db.Suppliers, "Id", "Name", product.SupplierId);
             return View(product);
         }
 
@@ -64,13 +108,11 @@ namespace Ecommerce.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var product = _db.Products.Find(id);
+            var product = _db.GetByID(id);
             if (product == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.ProductDetailId = new SelectList(_db.ProductDetails, "Id", "Description", product.ProductDetailId);
-            ViewBag.SupplierId = new SelectList(_db.Suppliers, "Id", "Name", product.SupplierId);
             return View(product);
         }
 
@@ -80,12 +122,10 @@ namespace Ecommerce.Controllers
         {
             if (ModelState.IsValid)
             {
-                _db.Entry(product).State = EntityState.Modified;
-                _db.SaveChanges();
+                _db.Update(product);
+                _db.Save();
                 return RedirectToAction("Index");
             }
-            ViewBag.ProductDetailId = new SelectList(_db.ProductDetails, "Id", "Description", product.ProductDetailId);
-            ViewBag.SupplierId = new SelectList(_db.Suppliers, "Id", "Name", product.SupplierId);
             return View(product);
         }
 
@@ -95,7 +135,7 @@ namespace Ecommerce.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var product = _db.Products.Find(id);
+            var product = _db.GetByID(id);
             if (product == null)
             {
                 return HttpNotFound();
@@ -107,9 +147,9 @@ namespace Ecommerce.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            var product = _db.Products.Find(id);
-            _db.Products.Remove(product);
-            _db.SaveChanges();
+            var product = _db.GetByID(id);
+            _db.Delete(product);
+            _db.Save();
             return RedirectToAction("Index");
         }
 
