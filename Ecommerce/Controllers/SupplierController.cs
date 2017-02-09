@@ -8,12 +8,13 @@ using System.Web;
 using System.Web.Mvc;
 using Ecommerce.DataAccessLayer;
 using Ecommerce.Models;
+using Ecommerce.CustomFilters;
 
 namespace Ecommerce.Controllers
 {
+    [AuthLog(Roles = "Admin, Manager")]
     public class SupplierController : Controller
     {
-        //private readonly Data _db = new Data();
         private readonly SupplierRepository _db;
 
         public SupplierController()
