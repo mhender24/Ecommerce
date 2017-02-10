@@ -15,6 +15,11 @@ namespace Ecommerce.Controllers
     {
         private readonly CategoryRepository _db;
 
+        public CategoriesController()
+        {
+            _db = new CategoryRepository(new Data());
+        }
+
         public ActionResult Index()
         {
             return View(_db.Get().ToList());
