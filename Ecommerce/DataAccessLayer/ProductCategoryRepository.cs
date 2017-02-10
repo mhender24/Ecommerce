@@ -10,5 +10,12 @@ namespace Ecommerce.DataAccessLayer
     {
         public ProductCategoryRepository(Data context) : base(context) { }
 
+        public IEnumerable<ProductCategory> allRecordsWithProductId(int productId)
+        {
+            return from pc in context.ProductCategory
+                   where pc.ProductId == productId
+                   select pc;
+        }
+
     }
 }
