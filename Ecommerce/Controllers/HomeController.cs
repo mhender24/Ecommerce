@@ -21,9 +21,9 @@ namespace Ecommerce.Controllers
             {
                 var body = "<p>Email From: {0} ({1})</p><p>Message:</p><p>{2}</p>";
                 var message = new MailMessage();
-                message.To.Add(new MailAddress("mhender24@gotimetechnologies.com")); //replace with valid value
-                message.To.Add(new MailAddress("mbolin@gotimetechnologies.com")); //replace with valid value
-                message.Subject = "Your email subject";
+                message.To.Add(new MailAddress("mhender24@gotimetechnologies.com")); 
+                message.To.Add(new MailAddress("mbolin@gotimetechnologies.com"));
+                message.Subject = "Request from Contact Page";
                 message.Body = string.Format(body, model.FromName, model.FromEmail, model.Message);
                 message.IsBodyHtml = true;
                 using (var smtp = new SmtpClient())
