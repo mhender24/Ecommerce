@@ -88,16 +88,22 @@ namespace Ecommerce.Controllers
         public ActionResult Create()
         {
             ViewBag.SupplierId = new SelectList(_db.SupplierRepository.Get(), "Id", "Name");
+            ViewBag.Categories = new MultiSelectList(_db.CategoryRepository.Get(), "Id", "Name");
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,SupplierId,Name,Price,Description,ProductImage")] Product product)
+        public ActionResult Create([Bind(Include = "Id,SupplierId,Name,Price,Description,ProductImage,CategoryId")] Product product, int[] categoryId)
         {
             if (ModelState.IsValid)
             {
                 _db.ProductRepository.Insert(product);
+                _db.Save();
+                foreach (var catId in categoryId)
+                {
+                    _db.ProductCategoryRepository.Insert(new ProductCategory { ProductId = product.Id, CategoryId = catId });
+                }
                 _db.Save();
                 return RedirectToAction("Index");
             }
