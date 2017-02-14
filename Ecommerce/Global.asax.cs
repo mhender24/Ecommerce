@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Ecommerce.Controllers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -16,6 +17,13 @@ namespace Ecommerce
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+            RegisterCustomControllerFactory();
+        }
+
+        private void RegisterCustomControllerFactory()
+        {
+            IControllerFactory factory = new CustomControllerFactory("Ecommerce", "Controllers");
+            ControllerBuilder.Current.SetControllerFactory(factory);
         }
     }
 }
