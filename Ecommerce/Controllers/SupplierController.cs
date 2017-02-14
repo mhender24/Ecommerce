@@ -15,11 +15,12 @@ namespace Ecommerce.Controllers
     [AuthLog(Roles = "Admin, Manager")]
     public class SupplierController : Controller
     {
-        private readonly SupplierRepository _db;
+        private readonly IRepo<Supplier> _db;
 
-        public SupplierController()
+        public SupplierController(IRepo<Supplier> repo)
         {
-            _db = new SupplierRepository(new Data());
+            //_db = new SupplierRepository(new DataAccessLayer.Data());
+            _db = repo;
         }
 
         public ActionResult Index()
@@ -111,15 +112,6 @@ namespace Ecommerce.Controllers
             _db.Delete(supplier);
             _db.Save();
             return RedirectToAction("Index");
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _db.Dispose();
-            }
-            base.Dispose(disposing);
         }
     }
 }

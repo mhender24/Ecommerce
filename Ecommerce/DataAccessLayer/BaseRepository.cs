@@ -7,7 +7,7 @@ using System.Web;
 
 namespace Ecommerce.DataAccessLayer
 {
-    public class BaseRepository<TEntity> : IDisposable  where TEntity : class 
+    public class BaseRepository<TEntity> : IDisposable, IRepo<TEntity>  where TEntity : class 
     {
         internal Data context;
         internal DbSet<TEntity> dbSet;
@@ -52,7 +52,7 @@ namespace Ecommerce.DataAccessLayer
             }
         }
 
-        public virtual TEntity GetByID(object id)
+        public virtual TEntity GetByID(int? id)
         {
             return dbSet.Find(id);
         }
@@ -62,7 +62,7 @@ namespace Ecommerce.DataAccessLayer
             dbSet.Add(entity);
         }
 
-        public virtual void Delete(object id)
+        public virtual void Delete(int? id)
         {
             TEntity entityToDelete = dbSet.Find(id);
             Delete(entityToDelete);

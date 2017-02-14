@@ -16,11 +16,11 @@ namespace Ecommerce.Controllers
     [AuthLog(Roles = "Admin,Manager")]
     public class ProductController : Controller
     {
-        private readonly ProductUnitOfWork _db;
+        private readonly IUnitOfWork _db;
 
-        public ProductController()
+        public ProductController(IUnitOfWork context)
         {
-            _db = new ProductUnitOfWork();
+            _db = context;
         }
 
         [AllowAnonymous]
@@ -44,9 +44,9 @@ namespace Ecommerce.Controllers
 
 
             if (!String.IsNullOrEmpty(searchString))
-                products = _db.ProductRepository.SearchProduct(searchString);
+                products = _db.Repository<Product>().Get(p => p.Name.Contains(searchString.ToUpper()) || p.Description.Contains(searchString.ToUpper()));
             else
-               products = _db.ProductRepository.Get();
+                products = _db.Repository<Product>().Get();
 
             switch (sortOrder)
             {
@@ -76,19 +76,19 @@ namespace Ecommerce.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var product = _db.ProductRepository.GetByID(id);
-            ViewBag.Categories = _db.CategoryRepository.GetCategoryByProductId(id);
+            var product =  _db.Repository<Product>().Get(p => p.Id == id);
+            ViewBag.Categories = _db.Repository<Category>().Get();
             if (product == null)
             {
                 return HttpNotFound();
             }
-            return View(product);
+            return View(product.ElementAt(0));
         }
 
         public ActionResult Create()
         {
-            ViewBag.SupplierId = new SelectList(_db.SupplierRepository.Get(), "Id", "Name");
-            ViewBag.Categories = new MultiSelectList(_db.CategoryRepository.Get(), "Id", "Name");
+            ViewBag.SupplierId = new SelectList(_db.Repository<Supplier>().Get(), "Id", "Name");
+            ViewBag.Categories = new MultiSelectList(_db.Repository<Category>().Get(), "Id", "Name");
             return View();
         }
 
@@ -98,13 +98,13 @@ namespace Ecommerce.Controllers
         {
             if (ModelState.IsValid)
             {
-                _db.ProductRepository.Insert(product);
-                _db.Save();
+                _db.Repository<Product>().Insert(product);
+                _db.Repository<Product>().Save();
                 foreach (var catId in categoryId)
                 {
-                    _db.ProductCategoryRepository.Insert(new ProductCategory { ProductId = product.Id, CategoryId = catId });
+                    _db.Repository<ProductCategory>().Insert(new ProductCategory { ProductId = product.Id, CategoryId = catId });
                 }
-                _db.Save();
+                _db.SaveChanges();
                 return RedirectToAction("Index");
             }
             return View(product);
@@ -116,13 +116,13 @@ namespace Ecommerce.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var product = _db.ProductRepository.GetByID(id);
+            var product = _db.Repository<Product>().GetByID(id);
             if (product == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.SupplierId = new SelectList(_db.SupplierRepository.Get(), "Id", "Name");
-            ViewBag.Categories = new MultiSelectList(_db.CategoryRepository.Get(), "Id", "Name");
+            ViewBag.SupplierId = new SelectList(_db.Repository<Supplier>().Get(), "Id", "Name");
+            ViewBag.Categories = new MultiSelectList(_db.Repository<Category>().Get(), "Id", "Name");
             return View(product);
         }
 
@@ -132,15 +132,16 @@ namespace Ecommerce.Controllers
         {
             if (ModelState.IsValid)
             {
-                _db.ProductRepository.Update(product);
-                var productCategory = _db.ProductCategoryRepository.allRecordsWithProductId(product.Id);
+                _db.Repository<Product>().Update(product);
+                string sql = "Select * From ProductCategory WHERE ProductId = @p0";
+                var productCategory = _db.Repository<ProductCategory>().GetWithRawSql(sql, product.Id);
 
-                foreach(var prodCat in productCategory)
-                    _db.ProductCategoryRepository.Delete(prodCat);
+                foreach (var prodCat in productCategory)
+                    _db.Repository<ProductCategory>().Delete(prodCat);
                 foreach (var catId in categoryId)
-                    _db.ProductCategoryRepository.Insert(new ProductCategory { ProductId = product.Id, CategoryId = catId });
+                    _db.Repository<ProductCategory>().Insert(new ProductCategory { ProductId = product.Id, CategoryId = catId });
 
-                _db.Save();
+                _db.SaveChanges();
                 return RedirectToAction("Index");
             }
             return View(product);
@@ -152,7 +153,7 @@ namespace Ecommerce.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var product = _db.ProductRepository.GetByID(id);
+            var product = _db.Repository<Product>().GetByID(id);
             if (product == null)
             {
                 return HttpNotFound();
@@ -164,9 +165,9 @@ namespace Ecommerce.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            var product = _db.ProductRepository.GetByID(id);
-            _db.ProductRepository.Delete(product);
-            _db.Save();
+            var product = _db.Repository<Product>().GetByID(id);
+            _db.Repository<Product>().Delete(product);
+            _db.SaveChanges();
             return RedirectToAction("Index");
         }
     }
