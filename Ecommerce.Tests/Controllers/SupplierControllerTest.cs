@@ -14,10 +14,25 @@ namespace Ecommerce.Tests.Controllers
     [TestFixture]
     class SupplierControllerTest
     {
+        TestDbSet<Supplier> context;
+        SupplierController supplierController;
+
+        [OneTimeSetUp]
+        public void TestSetup()
+        {
+            context = new TestDbSet<Supplier>();
+            supplierController = new SupplierController(context);
+        }
+
+        [SetUp]
+        public void SetUp()
+        {
+            context.Clear();
+        }
+
         [Test]
         public void Supplier_DefaultIndexMethod_ReturnsAllSuppliers()
         {
-            var supplierController = new SupplierController(new TestDbSet<Supplier>());
             var result = supplierController.Index() as ViewResult;
             Assert.IsEmpty(result.ViewName);
         }
@@ -25,9 +40,7 @@ namespace Ecommerce.Tests.Controllers
         [Test]
         public void Supplier_DetailTakesNullableId_ReturnsSingleSupplierAtId()
         {
-            var context = new TestDbSet<Supplier>();
-            var supplierController = new SupplierController(context);
-            context.Insert(GetMockValidSupplier());
+            context.Insert(GetMockSupplier());
             var result = supplierController.Details(0) as ViewResult;
             Assert.IsEmpty(result.ViewName);
         }
@@ -35,8 +48,6 @@ namespace Ecommerce.Tests.Controllers
         [Test]
         public void Supplier_DetailWithNoIdPassed_HttpStatusBadRequest()
         {
-            var context = new TestDbSet<Supplier>();
-            var supplierController = new SupplierController(context);
             var result = supplierController.Details(null) as HttpStatusCodeResult;
             Assert.AreEqual(400, result.StatusCode);
         }
@@ -44,8 +55,6 @@ namespace Ecommerce.Tests.Controllers
         [Test]
         public void Supplier_DetailWithNegativeId_ArgumentOutOfRangeException()
         {
-            var context = new TestDbSet<Supplier>();
-            var supplierController = new SupplierController(context);
             var result = Assert.Throws<ArgumentOutOfRangeException>(() => supplierController.Details(-1));
             Assert.IsNotNull(result.Message);
         }
@@ -54,41 +63,94 @@ namespace Ecommerce.Tests.Controllers
         public void Supplier_CreateNewSupplierValid_ContextCountOne()
         {
             var context = new TestDbSet<Supplier>();
-            var supplierController = new SupplierController(context);
-            var result = supplierController.Create(GetMockValidSupplier());
+            var controller = new SupplierController(context);
+            var result = controller.Create(GetMockSupplier());
             Assert.AreEqual(1, context.Count());
         }
 
         [Test]
-        public void Supplier_CreateNewSupplierInvalid_ContextCountOne()
+        public void Supplier_CreateNewSupplierInvalid_ContextCountZero()
         {
-            var context = new TestDbSet<Supplier>();
-            var supplierController = new SupplierController(context);
             supplierController.ModelState.AddModelError("Test", "Test");
-            var result = supplierController.Create(GetMockInvalidSupplier());
+            var result = supplierController.Create(GetMockSupplier());
             Assert.AreEqual(0, context.Count());
         }
 
         [Test]
         public void Supplier_EditHttpGetValid_ReturnSingleSupplier()
         {
-            var context = new TestDbSet<Supplier>();
-            var supplierController = new SupplierController(context);
-            context.Insert(GetMockValidSupplier());
+            context.Insert(GetMockSupplier());
             var result = supplierController.Edit(0) as ViewResult;
-            var x = result.Model as Supplier;
-            var expected = GetMockValidSupplier();
-            Assert.AreEqual(result, expected);
+            var actual = result.Model as Supplier;
+            Assert.AreEqual(actual.Id, GetMockSupplier().Id);
         }
 
-        public Supplier GetMockValidSupplier()
+        [Test]
+        public void Supplier_EditHttpGetNoSupplierAtId_ArgumentOutOfRangeException()
+        {
+            context.Insert(GetMockSupplier());
+            var result = Assert.Throws<ArgumentOutOfRangeException>(() => supplierController.Details(3));
+            Assert.IsNotNull(result.Message);
+        }
+
+        [Test]
+        public void Supplier_EditNewSupplierInvalidModelState_ContextCountZero()
+        {
+            supplierController.ModelState.AddModelError("Test", "Test");
+            var result = supplierController.Edit(GetMockSupplier());
+            Assert.AreEqual(0, context.Count());
+        }
+
+        [Test]
+        public void Supplier_EditSupplier_ContextChanged()
+        {
+            context.Insert(GetMockSupplier());
+            Supplier test = new Supplier { Id = 1, Name = "Mock", Phone = "555-555-5555", Address = "555 Someplace", City = "Milan", State = "Michingan", Zipcode = "48168" };
+            var result = supplierController.Edit(test);
+            Assert.AreNotEqual(context.GetByID(0).City, test.City);
+        }
+
+        [Test]
+        public void Supplier_DeleteSupplierNoIdPassed_BadRequest()
+        {
+            var result = supplierController.Delete(null) as HttpStatusCodeResult;
+            Assert.AreEqual(400, result.StatusCode);
+        }
+
+        [Test]
+        public void Supplier_DeleteSupplierNotFound_ArgumentOutOfRangeException()
+        {
+            var result = Assert.Throws<ArgumentOutOfRangeException>(() => supplierController.Delete(3));
+            Assert.IsNotNull(result.Message);
+        }
+
+        [Test]
+        public void Supplier_DeleteSupplierIdFound_ReturnsSingleSupplier()
+        {
+            context.Insert(GetMockSupplier());
+            var result = supplierController.Delete(0) as ViewResult;
+            var actual = result.Model as Supplier;
+            Assert.AreEqual(actual.Id, GetMockSupplier().Id);
+        }
+
+        [Test]
+        public void Supplier_DeleteConfirmSupplierIdFound_SupplierRemoved()
+        {
+            context.Insert(GetMockSupplier());
+            var result = supplierController.DeleteConfirmed(0);
+            Assert.AreEqual(0, context.Count());
+        }
+
+        public Supplier GetMockSupplier()
         {
             return new Supplier { Id = 1, Name = "Mock", Phone = "555-555-5555", Address = "555 Someplace", City = "Saline", State = "Michingan", Zipcode = "48168" };
         }
 
-        public Supplier GetMockInvalidSupplier()
+        [OneTimeTearDown]
+        public void TestTearDown()
         {
-            return new Supplier { Id = 1, Phone = "555-555-5555", Address = "555 Someplace", City = "Saline", State = "Michingan", Zipcode = "48168" };
+            context = null;
+            supplierController = null;
         }
     }
 }
