@@ -28,5 +28,6 @@ namespace Ecommerce.Models
 
         [Required]
         public string Zipcode { get; set; }
+
     }
 }

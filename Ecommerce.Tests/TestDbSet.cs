@@ -110,6 +110,11 @@ namespace Ecommerce.Tests
             
         }
 
+        public void Clear()
+        {
+            _data.Clear();
+        }
+
         public IEnumerable<T> GetWithRawSql(string query, params object[] parameters)
         {
             throw new NotImplementedException();
