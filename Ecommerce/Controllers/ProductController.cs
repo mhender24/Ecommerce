@@ -133,9 +133,7 @@ namespace Ecommerce.Controllers
             if (ModelState.IsValid)
             {
                 _db.Repository<Product>().Update(product);
-                string sql = "Select * From ProductCategory WHERE ProductId = @p0";
-                var productCategory = _db.Repository<ProductCategory>().GetWithRawSql(sql, product.Id);
-
+                var productCategory = _db.Repository<ProductCategory>().Get(p => p.ProductId == product.Id);
                 foreach (var prodCat in productCategory)
                     _db.Repository<ProductCategory>().Delete(prodCat);
                 foreach (var catId in categoryId)
